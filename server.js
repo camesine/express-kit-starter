@@ -4,14 +4,15 @@ import cors from 'cors'
 import express from 'express'
 import http from 'http'
 import methodOverride from 'method-override'
-import cpus from 'os'
+import { cpus } from 'os'
 
 if (cluster.isMaster) {
-
-    const numCPUs = cpus.length
+    
+    const numCPUs = cpus().length
     for (let i = 0; i < numCPUs; i++) {
         cluster.fork()
     }
+
     cluster.on('exit', (worker, code, signal) => {
         console.log('Worker ' + worker.process.pid + ' died with code: ' + code + ', and signal: ' + signal)
         console.log('Starting a new worker')
@@ -44,33 +45,57 @@ if (cluster.isMaster) {
 
     app.use((req, res, next) => {
         res.status(404)
-        res.json({
-            error: 'Not found',
-        })
+        res.json({ error: 'Not found' })
         next()
     })
 
     app.use((err, req, res, next)  => {
         if (err.name === 'UnauthorizedError') {
-            res.status(401).json({
-                error: 'Please send a valid Token...',
-            })
+            res.status(401).json({ error: 'Please send a valid Token...' })
         }
         next()
     })
 
     app.use((err, req, res, next) => {
         res.status(err.status || 500)
-        res.json({
-            error: err.message,
-        })
+        res.json({ error: err.message })
         next()
     })
 
     const port = process.env.PORT || 3000
     const server = http.createServer(app)
 
-    server.listen(3000)
+    server.listen(port)
+    
+    server.on("error", (error) => {
+        if (error.syscall !== "listen") {
+            throw error
+        }
+
+        const bind = typeof port === "string"
+        ? "Pipe " + port
+        : "Port " + port
+
+        switch (error.code) {
+            case "EACCES":
+                console.error(bind + " requires elevated privileges")
+                process.exit(1)
+                break
+            case "EADDRINUSE":
+                console.error(bind + " is already in use")
+                process.exit(1)
+                break
+            default:
+                throw error
+        }
+    })
+
+    server.on("listening", () => {
+        const addr = server.address()
+        const bind = typeof addr === "string"
+        ? "pipe " + addr
+        : "port " + addr.port
+        console.log('Server is running in process ' + process.pid + ' listening on PORT ' + addr.port + '\n')
+    })
+
 }
-
-
