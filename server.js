@@ -4,6 +4,7 @@ import cors from 'cors'
 import express from 'express'
 import http from 'http'
 import methodOverride from 'method-override'
+import { Router } from './app/Router'
 import { cpus } from 'os'
 
 if (cluster.isMaster) {
@@ -41,7 +42,9 @@ if (cluster.isMaster) {
         next(err)
     })
 
-    app.use('/', (req, res) => res.send('ok'))
+    Router.forEach((row) => {
+        app.use(row.path, row.middleware, row.handler)
+    })
 
     app.use((req, res, next) => {
         res.status(404)
