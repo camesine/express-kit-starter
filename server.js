@@ -6,6 +6,7 @@ import http from 'http'
 import methodOverride from 'method-override'
 import { Router } from './app/Router'
 import { cpus } from 'os'
+import { config } from './config/config'
 
 if (cluster.isMaster) {
     
@@ -65,7 +66,7 @@ if (cluster.isMaster) {
         next()
     })
 
-    const port = process.env.PORT || 3000
+    const port = process.env.PORT || config.PORT || 3000
     const server = http.createServer(app)
 
     server.listen(port)
