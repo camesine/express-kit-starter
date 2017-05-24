@@ -1,12 +1,8 @@
-import { JWTService } from '../services/JWTService'
+import { signToken } from '../services/JWTService'
 
-const Controller = {
-    index: async (req, res) => {
-        const payload = req.body.payload
-        const token = await JWTService.signToken(payload)
+export const index = async (req, res) => {
+    const payload = req.body.payload
+    const token = await signToken(payload)
 
-        res.send(token)
-    }
+    res.send(token)
 }
-
-export const JWTController = Controller

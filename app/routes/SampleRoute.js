@@ -1,5 +1,5 @@
 import express from 'express'
-import { SampleController } from '../controllers/SampleController'
+import * as SampleController from '../controllers/SampleController'
 
 const router = express.Router()
 
@@ -7,6 +7,6 @@ router.get('/', SampleController.index)
 router.get('/:id', SampleController.find)
 router.post('/', SampleController.create)
 router.put('/', SampleController.update)
-router.delete('/', SampleController.delete)
+router.delete('/', SampleController.remove)
 
 export const SampleRoutes = router

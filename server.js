@@ -4,9 +4,10 @@ import cors from 'cors'
 import express from 'express'
 import http from 'http'
 import methodOverride from 'method-override'
-import { Router } from './app/Router'
+import config from './config'
+import { LoadRouter } from './app/Router'
 import { cpus } from 'os'
-import { config } from './config/config'
+
 
 if (cluster.isMaster) {
     
@@ -43,9 +44,7 @@ if (cluster.isMaster) {
         next(err)
     })
 
-    Router.forEach((row) => {
-        app.use(row.path, row.middleware, row.handler)
-    })
+    LoadRouter(app)
 
     app.use((req, res, next) => {
         res.status(404)
@@ -54,6 +53,7 @@ if (cluster.isMaster) {
     })
 
     app.use((err, req, res, next)  => {
+        console.log(err)
         if (err.name === 'UnauthorizedError') {
             res.status(401).json({ error: 'Please send a valid Token...' })
         }

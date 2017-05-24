@@ -1,27 +1,21 @@
 import express from 'express'
 
-const Controller = {
-    
-    index: (req, res) => {
-        res.send('index')
-    },
-    
-    create: (req, res) => {
-        res.send('create')
-    },
-
-    update: (req, res) => {
-        res.send('update')
-    },
-
-    delete: (req, res) => {
-        res.send('delete')
-    },
-
-    find: (req, res) => {
-        res.send('find')
-    },
-
+export const index = (req, res) => {
+    res.send('index')
 }
 
-export const SampleController = Controller
+export const create = (req, res) => {
+    res.send('create')
+}
+
+export const update = (req, res) => {
+    res.send('update')
+}
+
+export const remove = (req, res) => {
+    res.send('delete')
+}
+
+export const find = (req, res) => {
+    res.send('find')
+}

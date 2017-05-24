@@ -1,8 +1,8 @@
 import express from 'express'
-import { JWTController } from '../controllers/JWTController'
+import { index } from '../controllers/JWTController'
 
 const router = express.Router()
 
-router.post('/', JWTController.index)
+router.post('/', index)
 
 export const JWTRoutes = router
