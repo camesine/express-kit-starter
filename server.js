@@ -5,9 +5,9 @@ import express from 'express'
 import http from 'http'
 import methodOverride from 'method-override'
 import config from './config'
+import mongoose from 'mongoose'
 import { Router } from './app/Router'
 import { cpus } from 'os'
-
 
 if (cluster.isMaster) {
     
@@ -68,9 +68,12 @@ if (cluster.isMaster) {
         next()
     })
 
+    mongoose.connect(config.DATABASE.SERVER)
+    
     const port = process.env.PORT || config.PORT || 3000
     const server = http.createServer(app)
-
+    
+    
     server.listen(port)
     
     server.on("error", (error) => {
