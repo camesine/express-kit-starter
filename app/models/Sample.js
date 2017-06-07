@@ -4,4 +4,4 @@ const SampleSchema = Schema({
     text: String
 })
 
-export const Sample = model('sample', sampleSchema)
+export const Sample = model('sample', SampleSchema)
