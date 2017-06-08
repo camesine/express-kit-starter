@@ -1,7 +1,7 @@
-import { Schema, model } from 'mongoose'
+import mongoose from 'mongoose'
 
-const SampleSchema = Schema({
+const SampleSchema = mongoose.Schema({
     text: String
 })
 
-export const Sample = model('sample', SampleSchema)
+export const Sample = mongoose.model('samples', SampleSchema)

@@ -1,15 +1,21 @@
 import express from 'express'
+import * as SampleService from '../services/SampleService'
 
-export const index = (req, res) => {
-    res.send('index')
+export const Index = async (req, res) => {
+    const sample = await SampleService.Listar()
+    res.send(sample)
 }
 
-export const create = (req, res) => {
-    res.send('create')
+export const Create = async (req, res) => {
+    const sample = req.body.sample
+    const result = await SampleService.Crear(sample)
+    res.send(result)
 }
 
-export const update = (req, res) => {
-    res.send('update')
+export const Update = async (req, res) => {
+    const sample = req.body.sample
+    const result = await SampleService.Editar(sample)
+    res.send(result)
 }
 
 export const remove = (req, res) => {

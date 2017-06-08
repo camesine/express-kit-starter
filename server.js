@@ -69,6 +69,7 @@ if (cluster.isMaster) {
     })
 
     mongoose.connect(config.DATABASE.SERVER)
+    mongoose.Promise = global.Promise
     
     const port = process.env.PORT || config.PORT || 3000
     const server = http.createServer(app)

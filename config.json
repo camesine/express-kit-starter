@@ -2,5 +2,5 @@
     "SECRET": "HltH3R3",
     "PORT": 1344,
     "DATABASE": {
-        "SERVER": "mongodb://127.0.0.1/sampledatabase"}
+        "SERVER": "mongodb://127.0.0.1:27017/sampledatabase"}
 }
