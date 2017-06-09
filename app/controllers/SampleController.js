@@ -18,10 +18,14 @@ export const Update = async (req, res) => {
     res.send(result)
 }
 
-export const remove = (req, res) => {
-    res.send('delete')
+export const Remove = async (req, res) => {
+    const id = req.body.id
+    const result = await SampleService.Eliminar(id)
+    res.send(result)
 }
 
-export const find = (req, res) => {
-    res.send('find')
+export const Find = async (req, res) => {
+    const id = req.params.id
+    const result = await SampleService.Buscar(id)
+    res.send(result)
 }

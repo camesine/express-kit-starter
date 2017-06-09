@@ -9,5 +9,21 @@ export const Listar = () => {
 }
 
 export const Editar = (sample) => {
-    return Sample.update({ '_id': sample._id }, { 'text': sample.text })
+    return Sample.update({
+        '_id': sample._id
+    }, {
+        'text': sample.text
+    })
+}
+
+export const Eliminar = (id) => {
+    return Sample.remove({
+        '_id': id
+    })
+}
+
+export const Buscar = (id) => {
+    return Sample.find({
+        '_id': id
+    })
 }
