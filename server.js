@@ -16,6 +16,12 @@ if (cluster.isMaster) {
         cluster.fork()
     }
 
+    console.log('Clustering: I will start ' + numCPUs + ' workers...')
+ 
+    cluster.on('online', function (worker) {
+        console.log('Worker ' + worker.process.pid + ' is online now!');
+    });
+
     cluster.on('exit', (worker, code, signal) => {
         console.log('Worker ' + worker.process.pid + ' died with code: ' + code + ', and signal: ' + signal)
         console.log('Starting a new worker')
@@ -25,10 +31,8 @@ if (cluster.isMaster) {
 } else {
 
     const app = express()
-    app.use(bodyParser.urlencoded({extended: true}))
-    app.use(bodyParser.json({ limit: '50mb'} ))
-    app.use(methodOverride())
 
+    /* --- CORS --- */
     app.use((req, res, next) => {
         res.header('Access-Control-Allow-Origin', '*')
         res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Authorization')
@@ -38,14 +42,21 @@ if (cluster.isMaster) {
 
     app.use(cors())
 
+    /* --- MIDDLEWARES --- */
+    app.use(bodyParser.urlencoded({extended: true}))
+    app.use(bodyParser.json({ limit: '50mb'} ))
+    app.use(methodOverride())
+
+    /* --- ROUTES --- */
+    Router.forEach((row) => {
+        app.use(row.path, row.middleware, row.handler)
+    })
+
+    /* --- ERRORS --- */
     app.use((err, req, res, next)=> {
         const error = new Error('Not found')
         err.status = 404
         next(err)
-    })
-
-    Router.forEach((row) => {
-        app.use(row.path, row.middleware, row.handler)
     })
 
     app.use((req, res, next) => {
@@ -55,7 +66,6 @@ if (cluster.isMaster) {
     })
 
     app.use((err, req, res, next)  => {
-        console.log(err)
         if (err.name === 'UnauthorizedError') {
             res.status(401).json({ error: 'Please send a valid Token...' })
         }
@@ -68,12 +78,13 @@ if (cluster.isMaster) {
         next()
     })
 
+    /* --- MONGOOSE START --- */
     mongoose.connect(config.DATABASE.SERVER)
     mongoose.Promise = global.Promise
     
+    /* --- SERVER START --- */
     const port = process.env.PORT || config.PORT || 3000
     const server = http.createServer(app)
-    
     
     server.listen(port)
     
