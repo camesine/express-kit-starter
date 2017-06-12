@@ -17,7 +17,7 @@ describe('ALL ', () => {
 
     before((done) => {
 
-        const payload = { 'user': 'user', 'password': 'pass' }        
+        const payload = { user: 'user', password: 'pass' }        
         Promise.all([
             signToken(payload),
             Listar()
@@ -47,6 +47,32 @@ describe('ALL ', () => {
             chai.expect(res.body).to.be.a('array')
             chai.expect(res.body[0]).to.have.all.keys('_id', 'text', '__v')
             chai.expect(res.body[0].text).to.be.a('string') 
+            done()
+        })
+    })
+
+    it('SAMPLE CONTROLLER POST CREATE', (done) => {
+        const sample = {text: 'Sample'}
+        chai.request(URI).post('/').set('Authorization', `bearer ${token}`).send({sample}).end((err, res) => {
+            chai.expect(res).to.have.status(200)
+            chai.expect(res).to.be.json
+            chai.expect(res.body).to.have.all.keys('_id', 'text', '__v')
+            chai.expect(res.body._id).to.be.a('string')
+            chai.expect(res.body.text).to.be.a('string')
+            done()
+        })
+    })
+
+    it('SAMPLE CONTROLLER PUT UPDATE', (done) => {
+        const sample = {_id: IdRecord, text: 'SAMPLE TEXT'}
+        chai.request(URI).put('/').set('Authorization', `bearer ${token}`).send({sample}).end((err, res) => {
+            console.log(res.body)
+            chai.expect(res).to.have.status(200)
+            chai.expect(res).to.be.json
+            chai.expect(res.body).to.have.all.keys('n', 'nModified', 'ok')
+            chai.expect(res.body._id).to.be.a('string')
+            chai.expect(res.body._id).to.be.a('string')
+            chai.expect(res.body._id).to.be.a('string')
             done()
         })
     })
