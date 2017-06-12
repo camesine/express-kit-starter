@@ -1,14 +1,54 @@
 import config from '../config'
-import Chai from 'chai'
-import Chai_http from 'chai-http'
+import { signToken } from '../app/services/JWTService'
+import { Listar } from '../app/services/SampleService'
+import chai from 'chai'
+import chai_http from 'chai-http'
+import mongoose from 'mongoose'
 
-const URI = 'http://127.0.0.1:' + config.port
-Chai.use(Chai_http)
+const URI = 'http://127.0.0.1:' + config.PORT
+let token = null
+let IdRecord = null
+chai.use(chai_http)
 
-describe('All: ', () => {
+mongoose.connect(config.DATABASE.SERVER)
+mongoose.Promise = global.Promise
 
-    it('Test', (done) => {
-        done()
+describe('ALL ', () => {
+
+    before((done) => {
+
+        const payload = { 'user': 'user', 'password': 'pass' }        
+        Promise.all([
+            signToken(payload),
+            Listar()
+        ]).then((res) => {
+            token = res[0]
+            IdRecord = res[1][0]._id
+            done()
+        })
+    
+    })
+
+    it('SAMPLE CONTROLLER GET FIND ALL', (done) => {
+        chai.request(URI).get('/').set('Authorization', `bearer ${token}`).end((err, res) => {
+            chai.expect(res).to.have.status(200)
+            chai.expect(res).to.be.json
+            chai.expect(res.body).to.be.a('array')
+            chai.expect(res.body[0]).to.have.all.keys('_id', 'text', '__v')
+            chai.expect(res.body[0].text).to.be.a('string')
+            done()
+        })
+    })
+
+    it('SAMPLE CONTROLLER POST FIND ONE', (done) => {
+        chai.request(URI).get('/' + IdRecord).set('Authorization', `bearer ${token}`).end((err, res) => {
+            chai.expect(res).to.have.status(200)
+            chai.expect(res).to.be.json
+            chai.expect(res.body).to.be.a('array')
+            chai.expect(res.body[0]).to.have.all.keys('_id', 'text', '__v')
+            chai.expect(res.body[0].text).to.be.a('string') 
+            done()
+        })
     })
 
 })
