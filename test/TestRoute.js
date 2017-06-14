@@ -91,4 +91,26 @@ describe('ALL ', () => {
         })
     })
 
+    it('SAMPLE CONTROLLER GET NOT FIND ONE', (done) => {
+        chai.request(URI).get('/' + 'XXXX').set('Authorization', `bearer ${token}`).end((err, res) => {
+            chai.expect(res).to.have.status(404)
+            chai.expect(res).to.be.json
+            chai.expect(res.body).to.have.all.keys('text')
+            chai.expect(res.body.text).to.be.a('string')
+            chai.expect(res.body.text).to.equal('NOT FOUND')
+            done()
+        })
+    })
+
+    it('SAMPLE CONTROLLER ERROR POST CREATE', (done) => {
+        chai.request(URI).post('/').set('Authorization', `bearer ${token}`).end((err, res) => {
+            chai.expect(res).to.have.status(404)
+            chai.expect(res).to.be.json
+            chai.expect(res.body).to.have.all.keys('text')
+            chai.expect(res.body.text).to.be.a('string')
+            chai.expect(res.body.text).to.equal('ERROR')
+            done()
+        })
+    })
+
 })
