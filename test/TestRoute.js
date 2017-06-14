@@ -1,6 +1,7 @@
 import config from '../config'
-import { signToken } from '../app/services/JWTService'
-import { Listar } from '../app/services/SampleService'
+import * as JWTService   from '../app/services/JWTService'
+import * as SampleService from '../app/services/SampleService'
+import { Sample } from '../app/models/Sample'
 import chai from 'chai'
 import chai_http from 'chai-http'
 import mongoose from 'mongoose'
@@ -17,16 +18,19 @@ describe('ALL ', () => {
 
     before((done) => {
 
-        const payload = { user: 'user', password: 'pass' }        
         Promise.all([
-            signToken(payload),
-            Listar()
+            JWTService.signToken({ payload: { user: 'user', password: 'pass' } }),
+            SampleService.Crear({ text: "SAMPLE TEXT" })
         ]).then((res) => {
             token = res[0]
-            IdRecord = res[1][0]._id
+            IdRecord = res[1]._id
             done()
         })
     
+    })
+
+    after((done) => {
+        Sample.remove({}).then(() => done())
     })
 
     it('SAMPLE CONTROLLER GET FIND ALL', (done) => {
@@ -40,7 +44,7 @@ describe('ALL ', () => {
         })
     })
 
-    it('SAMPLE CONTROLLER POST FIND ONE', (done) => {
+    it('SAMPLE CONTROLLER GET FIND ONE', (done) => {
         chai.request(URI).get('/' + IdRecord).set('Authorization', `bearer ${token}`).end((err, res) => {
             chai.expect(res).to.have.status(200)
             chai.expect(res).to.be.json
@@ -64,15 +68,25 @@ describe('ALL ', () => {
     })
 
     it('SAMPLE CONTROLLER PUT UPDATE', (done) => {
-        const sample = {_id: IdRecord, text: 'SAMPLE TEXT'}
+        const sample = { _id: IdRecord, text: 'Sample text' }
         chai.request(URI).put('/').set('Authorization', `bearer ${token}`).send({sample}).end((err, res) => {
-            console.log(res.body)
-            chai.expect(res).to.have.status(200)
+          chai.expect(res).to.have.status(200)
             chai.expect(res).to.be.json
             chai.expect(res.body).to.have.all.keys('n', 'nModified', 'ok')
-            chai.expect(res.body._id).to.be.a('string')
-            chai.expect(res.body._id).to.be.a('string')
-            chai.expect(res.body._id).to.be.a('string')
+            chai.expect(res.body.n).to.be.a('number')
+            chai.expect(res.body.nModified).to.be.a('number')
+            chai.expect(res.body.ok).to.be.a('number')
+            done()
+        })
+    })
+
+    it('SAMPLE CONTROLLER DELETE REMOVE', (done) => {
+        chai.request(URI).del('/').set('Authorization', `bearer ${token}`).send({ id: IdRecord }).end((err, res) => {
+            chai.expect(res).to.have.status(200)
+            chai.expect(res).to.be.json
+            chai.expect(res.body).to.have.all.keys('n', 'ok')
+            chai.expect(res.body.n).to.be.a('number')
+            chai.expect(res.body.ok).to.be.a('number')
             done()
         })
     })
