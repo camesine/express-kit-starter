@@ -1,7 +1,6 @@
 import config from '../config'
 import * as JWTService   from '../app/services/JWTService'
 import * as SampleService from '../app/services/SampleService'
-import { Sample } from '../app/models/Sample'
 import chai from 'chai'
 import chai_http from 'chai-http'
 import mongoose from 'mongoose'
@@ -30,7 +29,7 @@ describe('ALL ', () => {
     })
 
     after((done) => {
-        Sample.remove({}).then(() => done())
+        SampleService.Eliminar(IdRecord).then(() => done())
     })
 
     it('SAMPLE CONTROLLER GET FIND ALL', (done) => {
@@ -109,6 +108,28 @@ describe('ALL ', () => {
             chai.expect(res.body).to.have.all.keys('text')
             chai.expect(res.body.text).to.be.a('string')
             chai.expect(res.body.text).to.equal('ERROR')
+            done()
+        })
+    })
+
+    it('SAMPLE CONTROLLER ERROR PUT UPDATE', (done) => {
+        chai.request(URI).put('/').set('Authorization', `bearer ${token}`).send({sample: 'XXXX'}).end((err, res) => {
+            chai.expect(res).to.have.status(404)
+            chai.expect(res).to.be.json
+            chai.expect(res.body).to.have.all.keys('text')
+            chai.expect(res.body.text).to.be.a('string')
+            chai.expect(res.body.text).to.equal('NOT FOUND')
+            done()
+        })
+    })
+
+    it('SAMPLE CONTROLLER ERROR DELETE REMOVE', (done) => {
+        chai.request(URI).del('/').set('Authorization', `bearer ${token}`).send({ id: 'XXXX' }).end((err, res) => {
+            chai.expect(res).to.have.status(404)
+            chai.expect(res).to.be.json
+            chai.expect(res.body).to.have.all.keys('text')
+            chai.expect(res.body.text).to.be.a('string')
+            chai.expect(res.body.text).to.equal('NOT FOUND')
             done()
         })
     })
