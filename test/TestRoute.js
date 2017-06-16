@@ -102,7 +102,7 @@ describe('ALL ', () => {
     })
 
     it('SAMPLE CONTROLLER ERROR POST CREATE', (done) => {
-        chai.request(URI).post('/').set('Authorization', `bearer ${token}`).end((err, res) => {
+        chai.request(URI).post('/').set('Authorization', `bearer ${token}`).send({ sample: 'xxx' }).end((err, res) => {
             chai.expect(res).to.have.status(404)
             chai.expect(res).to.be.json
             chai.expect(res.body).to.have.all.keys('text')
@@ -113,7 +113,7 @@ describe('ALL ', () => {
     })
 
     it('SAMPLE CONTROLLER ERROR PUT UPDATE', (done) => {
-        chai.request(URI).put('/').set('Authorization', `bearer ${token}`).send({sample: 'XXXX'}).end((err, res) => {
+        chai.request(URI).put('/').set('Authorization', `bearer ${token}`).send({ sample: 'XXXX' }).end((err, res) => {
             chai.expect(res).to.have.status(404)
             chai.expect(res).to.be.json
             chai.expect(res.body).to.have.all.keys('text')

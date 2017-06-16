@@ -8,13 +8,14 @@ export const Index = async (req, res) => {
 
 export const Create = async (req, res) => {
     const sample = req.body.sample
-    const result = await SampleService.Crear(sample).catch(err => res.status(404).send({text: 'ERROR'}))
+    const result = await SampleService.Crear(sample).catch(err => res.status(404).send({ text: 'ERROR' }))
     res.send(result)
 }
 
 export const Update = async (req, res) => {
     const sample = req.body.sample
-    const result = await SampleService.Editar(sample).catch(err => res.status(404).send({text: 'NOT FOUND'}))
+    const result = await SampleService.Editar(sample).catch(err => res.status(404).send({text: 'ERROR'}))
+    if (result.n == 0) res.status(404).send({text: 'NOT FOUND'})
     res.send(result)
 }
 
