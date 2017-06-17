@@ -8,6 +8,7 @@ import mongoose from 'mongoose'
 const URI = 'http://127.0.0.1:' + config.PORT
 let token = null
 let IdRecord = null
+let IdRecordTwo = null
 chai.use(chai_http)
 
 mongoose.connect(config.DATABASE.SERVER)
@@ -29,7 +30,10 @@ describe('ALL ', () => {
     })
 
     after((done) => {
-        SampleService.Eliminar(IdRecord).then(() => done())
+        Promise.all([
+            SampleService.Eliminar(IdRecord),
+            SampleService.Eliminar(IdRecordTwo)
+        ]).then(() => done())
     })
 
     it('SAMPLE CONTROLLER GET FIND ALL', (done) => {
@@ -62,6 +66,7 @@ describe('ALL ', () => {
             chai.expect(res.body).to.have.all.keys('_id', 'text', '__v')
             chai.expect(res.body._id).to.be.a('string')
             chai.expect(res.body.text).to.be.a('string')
+            IdRecordTwo = res.body._id
             done()
         })
     })
