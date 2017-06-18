@@ -21,7 +21,7 @@ server.js (Main file to start the app)
 ```
 # Install
 1. First clone this repository.
-		git@github.com:camesine/express-kit-starter.git
+		https://github.com/camesine/node-restful-starter.git
 2. Download all dependencies.
 		npm install
 3. Edit the file ./config.json with your own settings:
