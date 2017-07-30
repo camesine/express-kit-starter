@@ -39,6 +39,8 @@ When execute any of this commands the app start with clustering, creating many c
 		npm run dev -> (./node_modules/.bin/nodemon server.js --exec ./node_modules/.bin/babel-node)
 	In Development mode the express app is starter with nodemon for automatic refresh when do changes.
 ## Production
-		npm start -> (./node_modules/.bin/babel-node server.js)
+		npm start -> (npm run build && node ./dist/server.js)
+## Build
+		npm start -> (npm run clean && ./node_modules/.bin/babel server.js --out-dir dist && ./node_modules/.bin/babel app --out-dir dist/app && cp config.json dist)
 ## Test
         npm test -> (./node_modules/.bin/_mocha --require babel-core/register)

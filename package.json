@@ -4,9 +4,11 @@
   "description": "express kit starter",
   "main": "server.js",
   "scripts": {
-    "start": "./node_modules/.bin/babel-node server.js",
+    "start": "npm run build && node ./dist/server.js",
     "dev": "./node_modules/.bin/nodemon server.js --exec ./node_modules/.bin/babel-node",
-    "test": "./node_modules/.bin/_mocha --require babel-core/register"
+    "test": "./node_modules/.bin/_mocha --require babel-core/register",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && ./node_modules/.bin/babel server.js --out-dir dist && ./node_modules/.bin/babel app --out-dir dist/app && cp config.json dist"
   },
   "babel": {
     "presets": [
