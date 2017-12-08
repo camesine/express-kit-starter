@@ -79,7 +79,9 @@ if (cluster.isMaster) {
     })
 
     /* --- MONGOOSE START --- */
-    mongoose.connect(config.DATABASE.SERVER)
+    mongoose.connect(config.DATABASE.SERVER, {
+        useMongoClient: true
+    })
     mongoose.Promise = global.Promise
     
     /* --- SERVER START --- */

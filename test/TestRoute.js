@@ -11,7 +11,9 @@ let IdRecord = null
 let IdRecordTwo = null
 chai.use(chai_http)
 
-mongoose.connect(config.DATABASE.SERVER)
+mongoose.connect(config.DATABASE.SERVER, {
+    useMongoClient: true
+})
 mongoose.Promise = global.Promise
 
 describe('ALL ', () => {
